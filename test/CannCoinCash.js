@@ -1,13 +1,69 @@
 var CannCoinCash = artifacts.require("CannCoinCash");
 
 contract('CannCoinCash', function(accounts) {
+  initialSupply = 1000000;
+  transferAmount = 10;
+
+  it('set the token metadata', function() {
+    return CannCoinCash.deployed().then(function(instance) {
+      tokenInstance = instance;
+      return tokenInstance.name();
+    }).then(function(tokenName) {
+      assert.equal(tokenName, 'CannCoinCash', 'has the correct name');
+      return tokenInstance.symbol();
+    }).then(function(tokenSymbol) {
+      assert.equal(tokenSymbol, 'CCC', 'has the correct symbol')
+      return tokenInstance.version();
+    }).then(function(version) {
+      assert.equal(version, 'CannCoinCash 0.1', 'has the correct version')
+    });
+  });
 
   it('sets the total supply upon deployment', function() {
     return CannCoinCash.deployed().then(function(instance) { 
       tokenInstance = instance; 
       return tokenInstance.totalSupply();
     }).then(function(totalSupply) {
-      assert.equal(totalSupply.toNumber(), 1000000, 'sets the total supply to 1,000,000');
+      assert.equal(totalSupply.toNumber(), initialSupply, 'sets the total supply to 1,000,000');
+      return tokenInstance.balanceOf(accounts[0]);
+    }).then(function(adminBalance) {
+      assert.equal(adminBalance.toNumber(), initialSupply, 'it allocations the initial supply to the admin acccount');
+    });
+  });
+
+  it('allocates initial supply to the admin acccount', function() {
+    return CannCoinCash.deployed().then(function(instance) { 
+      tokenInstance = instance; 
+      return tokenInstance.balanceOf(accounts[0]);
+    }).then(function(adminBalance) {
+      assert.equal(adminBalance.toNumber(), initialSupply, 'it allocations the initial supply to the admin acccount');
+    });
+  });
+
+
+  it('transfers token ownership', function() {
+    return CannCoinCash.deployed().then(function(instance) { 
+      tokenInstance = instance; 
+      // stops transfer if sender does not have enough tokens
+      return tokenInstance.transfer.call(accounts[1], 999999999999);
+    }).then(assert.fail).catch(function(error) {
+      assert(error.message.indexOf('revert') >= 0, 'error message must contain revert');
+      return tokenInstance.transfer.call(accounts[1], transferAmount, { from: accounts[0]});
+    }).then(function(success) {
+      assert.equal(success, true, 'it returns true upon successful transfer')
+      return tokenInstance.transfer(accounts[1], transferAmount, { from: accounts[0] });
+    }).then(function(receipt) {
+      assert.equal(receipt.logs.length, 1, 'emits one event');
+      assert.equal(receipt.logs[0].event, 'Transfer', 'is the Transfer event');
+      assert.equal(receipt.logs[0].args._from, accounts[0], 'logs the account the tokens are transferred from');
+      assert.equal(receipt.logs[0].args._to, accounts[1], 'logs the account the tokens are transferred to');
+      assert.equal(receipt.logs[0].args._value, 10, 'logs the transfer amount');
+      return tokenInstance.balanceOf(accounts[1])
+    }).then(function(balance) {
+      assert.equal(balance.toNumber(), transferAmount, 'adds amount to receiving account');
+      return tokenInstance.balanceOf(accounts[0]);
+    }).then(function(balance) {
+      assert.equal(balance.toNumber(), (initialSupply-transferAmount), 'subtracts amount from sending account');
     });
   });
 
