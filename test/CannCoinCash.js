@@ -67,4 +67,33 @@ contract('CannCoinCash', function(accounts) {
     });
   });
 
+  it('approves tokens for delegated transfer', function() {
+    return CannCoinCash.deployed().then(function(instance) { 
+      tokenInstance = instance; 
+      return tokenInstance.approve.call(accounts[1], transferAmount);
+    }).then(function(success) {
+      assert.equal(success, true, 'it returns true upon successful transfer');
+      return tokenInstance.approve(accounts[1], transferAmount, { from: accounts[0] });
+    }).then(function(receipt) {
+      assert.equal(receipt.logs.length, 1, 'emits one event');
+      assert.equal(receipt.logs[0].event, 'Approval', 'is the Transfer event');
+      assert.equal(receipt.logs[0].args._owner, accounts[0], 'logs the account owner delegating approval');
+      assert.equal(receipt.logs[0].args._spender, accounts[1], 'logs the account that has delegated approval');
+      assert.equal(receipt.logs[0].args._value, 10, 'logs the approval transfer amount');
+      return tokenInstance.allowance(accounts[0], accounts[1]);
+    }).then(function(allowance) {
+      assert.equal(allowance, transferAmount, 'stores the allowance for a delegated transfer');
+    });
+  });
+
+  it('transfers from a delegated account', function() {
+    return CannCoinCash.deployed().then(function(instance) { 
+      tokenInstance = instance; 
+      // stops transfer if sender has not been given delegated authority
+      return tokenInstance.transferFrom.call(accounts[1], accounts[2], transferAmount, { from: accounts[0] });
+    }).then(assert.fail).catch(function(error) {
+      assert(error.message.indexOf('revert') >= 0, 'it throws and error if delagated authority has not been granted');
+    });
+  });
+
 })
