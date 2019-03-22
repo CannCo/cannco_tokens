@@ -53,6 +53,14 @@ contract CannCoinCash {
 
   function transferFrom(address _from, address _to, uint256 _value) public returns (bool success) {
 
+    // require _from has enought tokens
+    // require allowance is large enough
+    // change the balance
+    // update the allowance
+    // emit transfer event
+    // return a boolean
+    
+    require(1 == 0);
     require(balanceOf[_from] >= _value);
 
     // require(allowance[msg.sender][_from] > 0);
