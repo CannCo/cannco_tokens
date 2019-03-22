@@ -53,7 +53,9 @@ contract CannCoinCash {
 
   function transferFrom(address _from, address _to, uint256 _value) public returns (bool success) {
 
-    require(allowance[msg.sender][_from] > 0);
+    require(balanceOf[_from] >= _value);
+
+    // require(allowance[msg.sender][_from] > 0);
 
     // return true;
   }
