@@ -49,23 +49,27 @@ contract CannCoinCash {
     emit Approval(msg.sender, _spender, _value);
 
     return true;
-  }
+  } 
 
   function transferFrom(address _from, address _to, uint256 _value) public returns (bool success) {
 
     // require _from has enought tokens
+    require(_value <= balanceOf[_from]);
+
     // require allowance is large enough
-    // change the balance
+    require(_value <= allowance[_from][msg.sender]);
+
+    // change the balances
+    balanceOf[_from] -= _value;
+    balanceOf[_to] += _value;
+
     // update the allowance
+    allowance[_from][msg.sender] -= _value;
+        
     // emit transfer event
-    // return a boolean
-    
-    require(1 == 0);
-    require(balanceOf[_from] >= _value);
+    emit Transfer(_from, _to, _value);
 
-    // require(allowance[msg.sender][_from] > 0);
-
-    // return true;
+    return true;
   }
 
 }
