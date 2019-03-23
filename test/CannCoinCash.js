@@ -1,26 +1,26 @@
-var CannCoinCash = artifacts.require("CannCoinCash");
+var CanncoinCash = artifacts.require("CanncoinCash");
 
 const initialSupply = 1000000;
 
-contract('CannCoinCash', function (accounts) {
+contract('CannCoin Cash', function (accounts) {
 
   it('set the token metadata', function () {
-    return CannCoinCash.deployed().then(function (instance) {
+    return CanncoinCash.deployed().then(function (instance) {
       tokenInstance = instance;
       return tokenInstance.name();
     }).then(function (tokenName) {
-      assert.equal(tokenName, 'CannCoinCash', 'has the correct name');
+      assert.equal(tokenName, 'Canncoin Cash', 'has the correct name');
       return tokenInstance.symbol();
     }).then(function (tokenSymbol) {
-      assert.equal(tokenSymbol, 'CCC', 'has the correct symbol')
+      assert.equal(tokenSymbol, 'CASH', 'has the correct symbol')
       return tokenInstance.version();
     }).then(function (version) {
-      assert.equal(version, 'CannCoinCash 0.1', 'has the correct version')
+      assert.equal(version, 'Canncoin Cash 1.0', 'has the correct version')
     });
   });
 
   it('sets the total supply upon deployment', function () {
-    return CannCoinCash.deployed().then(function (instance) {
+    return CanncoinCash.deployed().then(function (instance) {
       tokenInstance = instance;
       return tokenInstance.totalSupply();
     }).then(function (totalSupply) {
@@ -32,7 +32,7 @@ contract('CannCoinCash', function (accounts) {
   });
 
   it('allocates initial supply to the admin acccount', function () {
-    return CannCoinCash.deployed().then(function (instance) {
+    return CanncoinCash.deployed().then(function (instance) {
       tokenInstance = instance;
       return tokenInstance.balanceOf(accounts[0]);
     }).then(function (adminBalance) {
@@ -43,7 +43,7 @@ contract('CannCoinCash', function (accounts) {
   it('transfers token ownership', function () {
     const transferAmount = 1000;
 
-    return CannCoinCash.deployed().then(function (instance) {
+    return CanncoinCash.deployed().then(function (instance) {
       tokenInstance = instance;
       // stops transfer if sender does not have enough tokens
       return tokenInstance.transfer.call(accounts[1], initialSupply+1);
@@ -71,7 +71,7 @@ contract('CannCoinCash', function (accounts) {
   it('approves tokens for delegated transfer', function () {
     const allowanceAmount = 500;
 
-    return CannCoinCash.deployed().then(function (instance) {
+    return CanncoinCash.deployed().then(function (instance) {
       tokenInstance = instance;
       return tokenInstance.approve.call(accounts[1], allowanceAmount);
     }).then(function (success) {
@@ -97,7 +97,7 @@ contract('CannCoinCash', function (accounts) {
     const allowanceAmount = 800;
     const transferAmount = 500;
   
-    return CannCoinCash.deployed().then(function (instance) {
+    return CanncoinCash.deployed().then(function (instance) {
       tokenInstance = instance;
       
       // Transfer some tokens to fromAccount

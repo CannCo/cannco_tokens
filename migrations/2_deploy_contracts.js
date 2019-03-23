@@ -1,11 +1,11 @@
-const CannCoinCash = artifacts.require("CannCoinCash");
+const CanncoinCash = artifacts.require("CanncoinCash");
 
 module.exports = function(deployer) {
   deployer.deploy(
-    CannCoinCash, 
+    CanncoinCash, 
     1000000, 
-    'CannCoinCash', 
-    'CCC',
-    'CannCoinCash 0.1'
+    'Canncoin Cash', 
+    'CASH',
+    'Canncoin Cash 1.0'
   );
 };
