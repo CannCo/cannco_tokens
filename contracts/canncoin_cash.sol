@@ -22,7 +22,7 @@ contract CanncoinCash {
     event Burn(address indexed from, uint256 value);
 
     constructor(uint256 initialSupply, string memory tokenName, string memory tokenSymbol, string memory tokenVersion) public {
-        totalSupply = initialSupply; //* 10 ** uint256(decimals);  
+        totalSupply = initialSupply * 10 ** uint256(decimals);  
         balanceOf[msg.sender] = totalSupply;                
         name = tokenName;                                   
         symbol = tokenSymbol;  

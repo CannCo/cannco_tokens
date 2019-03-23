@@ -46,7 +46,7 @@ contract('CannCoin Cash', function (accounts) {
     return CanncoinCash.deployed().then(function (instance) {
       tokenInstance = instance;
       // stops transfer if sender does not have enough tokens
-      return tokenInstance.transfer.call(accounts[1], initialSupply+1);
+      return tokenInstance.transfer.call(accounts[1], initialSupply + 1);
     }).then(assert.fail).catch(function (error) {
       assert(error.message.indexOf('revert') >= 0, 'error message must contain revert');
       return tokenInstance.transfer.call(accounts[1], transferAmount, { from: accounts[0] });
@@ -56,9 +56,9 @@ contract('CannCoin Cash', function (accounts) {
     }).then(function (receipt) {
       assert.equal(receipt.logs.length, 1, 'emits one event');
       assert.equal(receipt.logs[0].event, 'Transfer', 'is the Transfer event');
-      assert.equal(receipt.logs[0].args._from, accounts[0], 'logs the account the tokens are transferred from');
-      assert.equal(receipt.logs[0].args._to, accounts[1], 'logs the account the tokens are transferred to');
-      assert.equal(receipt.logs[0].args._value, transferAmount, 'logs the transfer amount');
+      assert.equal(receipt.logs[0].args.from, accounts[0], 'logs the account the tokens are transferred from');
+      assert.equal(receipt.logs[0].args.to, accounts[1], 'logs the account the tokens are transferred to');
+      assert.equal(receipt.logs[0].args.value, transferAmount, 'logs the transfer amount');
       return tokenInstance.balanceOf(accounts[1])
     }).then(function (balance) {
       assert.equal(balance.toNumber(), transferAmount, 'adds amount to receiving account');
@@ -96,44 +96,44 @@ contract('CannCoin Cash', function (accounts) {
     const initialBalance = 1000;
     const allowanceAmount = 800;
     const transferAmount = 500;
-  
+
     return CanncoinCash.deployed().then(function (instance) {
       tokenInstance = instance;
-      
+
       // Transfer some tokens to fromAccount
       return tokenInstance.transfer(fromAccount, initialBalance, { from: accounts[0] });
-      }).then(function(receipt) {
-        // Approve spendingAccount to spend transferAmount tokens
-        return tokenInstance.approve(spendingAccount, allowanceAmount, { from: fromAccount });
-      }).then(function(receipt) {
-        // Test that it rejects transfers larger than fromAccount's balance
-        return tokenInstance.transferFrom(fromAccount, toAccount, initialBalance+1, { from: spendingAccount });
-      }).then(assert.fail).catch(function(error) {
-        assert(error.message.indexOf('revert') >= 0, 'halts transfers larger than available balance');
-        // Test that it rejects transfers larger than approved allowance
-        return tokenInstance.transferFrom(fromAccount, toAccount, allowanceAmount+1, { from: spendingAccount });
-      }).then(assert.fail).catch(function(error) {
-        assert(error.message.indexOf('revert') >= 0, 'halts transfers larger than approved allowance');
-        // Test that it returns success on a valid transfer request
-        return tokenInstance.transferFrom.call(fromAccount, toAccount, transferAmount, { from: spendingAccount });
-      }).then(function(success) {
-        assert.equal(success, true, 'returns success on a valid transfer request');
-        return tokenInstance.transferFrom(fromAccount, toAccount, transferAmount, { from: spendingAccount });
-      }).then(function(receipt) {
-        assert.equal(receipt.logs.length, 1, 'emits one event');
-        assert.equal(receipt.logs[0].event, 'Transfer', 'is the Transfer event');
-        assert.equal(receipt.logs[0].args._from, fromAccount, 'logs the account the tokens are transferred from');
-        assert.equal(receipt.logs[0].args._to, toAccount, 'logs the account the tokens are transferred to');
-        assert.equal(receipt.logs[0].args._value, transferAmount, 'logs the transfer amount');
-        return tokenInstance.balanceOf(fromAccount);
-      }).then(function(balance) {
-        assert.equal(balance.toNumber(), initialBalance - transferAmount, 'decrements the balance of the FROM account');
-        return tokenInstance.balanceOf(toAccount);
-      }).then(function(balance) {
-        assert.equal(balance.toNumber(), transferAmount, 'increments the balance of the TO account');
-        return tokenInstance.allowance(fromAccount, spendingAccount);
-      }).then(function(balance) {
-        assert.equal(balance.toNumber(), allowanceAmount - transferAmount, 'adjusts the allowance');
-      });
+    }).then(function (receipt) {
+      // Approve spendingAccount to spend transferAmount tokens
+      return tokenInstance.approve(spendingAccount, allowanceAmount, { from: fromAccount });
+    }).then(function (receipt) {
+      // Test that it rejects transfers larger than fromAccount's balance
+      return tokenInstance.transferFrom(fromAccount, toAccount, initialBalance + 1, { from: spendingAccount });
+    }).then(assert.fail).catch(function (error) {
+      assert(error.message.indexOf('revert') >= 0, 'halts transfers larger than available balance');
+      // Test that it rejects transfers larger than approved allowance
+      return tokenInstance.transferFrom(fromAccount, toAccount, allowanceAmount + 1, { from: spendingAccount });
+    }).then(assert.fail).catch(function (error) {
+      assert(error.message.indexOf('revert') >= 0, 'halts transfers larger than approved allowance');
+      // Test that it returns success on a valid transfer request
+      return tokenInstance.transferFrom.call(fromAccount, toAccount, transferAmount, { from: spendingAccount });
+    }).then(function (success) {
+      assert.equal(success, true, 'returns success on a valid transfer request');
+      return tokenInstance.transferFrom(fromAccount, toAccount, transferAmount, { from: spendingAccount });
+    }).then(function (receipt) {
+      assert.equal(receipt.logs.length, 1, 'emits one event');
+      assert.equal(receipt.logs[0].event, 'Transfer', 'is the Transfer event');
+      assert.equal(receipt.logs[0].args.from, fromAccount, 'logs the account the tokens are transferred from');
+      assert.equal(receipt.logs[0].args.to, toAccount, 'logs the account the tokens are transferred to');
+      assert.equal(receipt.logs[0].args.value, transferAmount, 'logs the transfer amount');
+      return tokenInstance.balanceOf(fromAccount);
+    }).then(function (balance) {
+      assert.equal(balance.toNumber(), initialBalance - transferAmount, 'decrements the balance of the FROM account');
+      return tokenInstance.balanceOf(toAccount);
+    }).then(function (balance) {
+      assert.equal(balance.toNumber(), transferAmount, 'increments the balance of the TO account');
+      return tokenInstance.allowance(fromAccount, spendingAccount);
+    }).then(function (balance) {
+      assert.equal(balance.toNumber(), allowanceAmount - transferAmount, 'adjusts the allowance');
+    });
   });
 })
