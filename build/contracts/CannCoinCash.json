@@ -10637,8 +10637,8 @@
     "3": {
       "events": {},
       "links": {},
-      "address": "0xEdf562Be2315BA8b2042DAD1784e2b0ed37c1347",
-      "transactionHash": "0x0dac4dc7bbf02fde62b3d1cb1b9816d0e4b25cfc74b501221c6492053b4c5054"
+      "address": "0xD76C461f5C2D05b7A65b0cc15E42b7Cd5D674709",
+      "transactionHash": "0x25421ba863acdd2516900b59054ad2d42486e6a9c450b486b29b1d08dc9266f9"
     },
     "5777": {
       "events": {},
@@ -10647,8 +10647,8 @@
       "transactionHash": "0x62070568c5cc351db26bd2328952caa5a8c648c7565136ae740b4bbc0ea207c4"
     }
   },
-  "schemaVersion": "3.0.5",
-  "updatedAt": "2019-03-23T08:47:21.223Z",
+  "schemaVersion": "3.0.3",
+  "updatedAt": "2019-03-23T19:54:08.829Z",
   "devdoc": {
     "methods": {
       "approve(address,uint256)": {
