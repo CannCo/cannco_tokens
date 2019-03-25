@@ -34,6 +34,8 @@ contract CanncoinCash is owned {
 
     event Transfer(address indexed from, address indexed to, uint256 value);
     
+    event NameChange(string _oldName, string _newName);
+
     event Approval(address indexed _owner, address indexed _spender, uint256 _value);
 
     event Burn(address indexed from, uint256 value);
@@ -50,7 +52,15 @@ contract CanncoinCash is owned {
         name = tokenName;                                   
         symbol = tokenSymbol;  
         version = tokenVersion;     
-        if (admin != 0x0) owner = admin;                        
+       // if (admin != 0x0) owner = admin;                        
+    }
+
+    function changeName(string memory _newName) onlyOwner public {
+        name = _newName;
+    }
+
+    function changeSymbol(string memory _newSymbol) onlyOwner public {
+        symbol = _newSymbol;
     }
 
     /**
@@ -157,7 +167,7 @@ contract CanncoinCash is owned {
     /**
      * Mint `_value` tokens from the system irreversibly
      *
-     * @param _value the amount of money to burn
+     * @param _target 
      */
     function mintToken(
         address target, 
@@ -165,7 +175,6 @@ contract CanncoinCash is owned {
     onlyOwner public {
         balanceOf[target] += mintedAmount;
         totalSupply += mintedAmount;
-        emit Transfer(0, owner, mintedAmount);
         emit Transfer(owner, target, mintedAmount);
     }
 

@@ -40,6 +40,21 @@ contract('CannCoin Cash', function (accounts) {
     });
   });
 
+  it('renames the token', function () {
+    return CanncoinCash.deployed().then(function (instance) {
+      tokenInstance = instance;
+      return tokenInstance.changeName("New Name");
+    }).then(function (receipt) {
+      assert.equal(receipt.logs.length, 1, 'emits one event');
+      assert.equal(receipt.logs[0].event, 'NameChange', 'is the NameCHange event');
+      assert.equal(receipt.logs[0].args._oldName, "Canncoin Cash", 'logs the original name of the token');
+      assert.equal(receipt.logs[0].args._newName, "New Name", 'logs the new name of the token');
+      return tokenInstance.name();
+    }).then(function (name) {
+      assert.equal(name, "New Name", 'it renames the token')
+    });
+  });
+
   it('transfers token ownership', function () {
     const transferAmount = 1000;
 
